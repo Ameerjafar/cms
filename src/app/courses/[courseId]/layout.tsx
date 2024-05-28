@@ -1,23 +1,23 @@
 import { QueryParams } from '@/actions/types';
 import { Sidebar } from '@/components/Sidebar';
-import { Folder, getFullCourseContent } from '@/db/course';
+import { getFullCourseContent } from '@/db/course';
 import { authOptions } from '@/lib/auth';
 import { getPurchases } from '@/utiles/appx';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 
-interface PurchaseType {
-  id: number;
-  title: string;
-  imageUrl: string;
-  description: string;
-  appxCourseId: number;
-  openToEveryone: boolean;
-  slug: string;
-  discordRoleId: string;
-  totalVideos?: number;
-  totalVideosWatched: number;
-}
+// interface PurchaseType {
+//   id: number;
+//   title: string;
+//   imageUrl: string;
+//   description: string;
+//   appxCourseId: number;
+//   openToEveryone: boolean;
+//   slug: string;
+//   discordRoleId: string;
+//   totalVideos?: number;
+//   totalVideosWatched: number;
+// }
 const checkAccess = async (courseId: string) => {
   const session = await getServerSession(authOptions);
 
@@ -25,7 +25,7 @@ const checkAccess = async (courseId: string) => {
     return false;
   }
   const purchases = await getPurchases(session.user.email);
-  if (purchases.map((p: PurchaseType) => p.id).includes(Number(courseId))) {
+  if (purchases.map((p) => p.id).includes(Number(courseId))) {
     return true;
   }
   return false;
@@ -46,9 +46,7 @@ const Layout = async ({
     redirect('/api/auth/signin');
   }
 
-  const fullCourseContent: Folder[] = await getFullCourseContent(
-    parseInt(courseId, 10),
-  );
+  const fullCourseContent = await getFullCourseContent(parseInt(courseId, 10));
 
   return (
     <div className="flex h-full">
